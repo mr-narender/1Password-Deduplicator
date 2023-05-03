@@ -18,7 +18,7 @@ def run_command(cmd):
 
 def domain_parts(item: dict):
     """Get top level domain."""
-    if not "domain_parts" in item:
+    if "domain_parts" not in item:
         item["domain_parts"] = [tldextract.extract(url["href"]) for url in item["urls"]]
     return item["domain_parts"]
 
@@ -34,9 +34,10 @@ def domains(item):
 
 def root_domains(item) -> set:
     """Return a set of domain names linked to the item."""
-    return set(
-        ".".join(p for p in (d.domain, d.suffix) if p) for d in domain_parts(item)
-    )
+    return {
+        ".".join(p for p in (d.domain, d.suffix) if p)
+        for d in domain_parts(item)
+    }
 
 
 def username(item):
@@ -61,7 +62,7 @@ def otp(item):
 
 
 def details(item):
-    if not "details" in item:
+    if "details" not in item:
         item["details"] = json.loads(
             run_command(
                 f'op get item {item["id"]} --fields "username,password,one-time password"'
@@ -103,7 +104,7 @@ def run(items: list):
         if "trashed" in new_item:
             continue
 
-        if not "urls" in new_item:
+        if "urls" not in new_item:
             continue
 
         if ignore_favorites and new_item.get("favorite", False):
